@@ -140,7 +140,7 @@ class TestEmbedImage(unittest.TestCase):
             non_image.write(b'Hello')
             non_image.flush()
             with self.assertRaisesRegex(ValueError,
-                                        'expected an image, got "text"'):
+                                        'expected an image, got "(text|txt)"'):
                 pybadges._embed_image(non_image.name)
 
     def test_file_url(self):

@@ -30,7 +30,16 @@ gh-badges library
 """
 
 import base64
-import imghdr
+try:
+    import imghdr
+except ImportError:
+    # filetype does not handle svg, use puremagic
+    imghdr = None
+    try:
+        import puremagic
+    except ImportError:
+        raise RuntimeError("requires imghdr or puremagic")
+
 import mimetypes
 from typing import Optional
 import urllib.parse
@@ -72,6 +81,22 @@ _NAME_TO_COLOR = {
 }
 
 
+def guess_file_type(filename=None, content=None):
+    if imghdr:
+        return imghdr.what(None, content)
+    if puremagic:
+        try:
+            res = puremagic.from_file(filename=filename)[1:]
+            imghdr_types = ('rgb', 'gif','pbm', 'pgm', 'ppm',
+                            'tiff', 'rast', 'xbm', 'jpeg',
+                            'bmp', 'png', 'webp', 'exr', 'svg')
+            if res not in imghdr_types:
+                raise ValueError(f'expected an image, got "{res}" does not match ')
+            return res
+        except puremagic.main.PureError:
+            raise ValueError("not able to determine file type")
+
+
 def _remove_blanks(node):
     for x in node.childNodes:
         if x.nodeType == minidom.Node.TEXT_NODE:
@@ -102,7 +127,8 @@ def _embed_image(url: str) -> str:
     else:
         with open(url, 'rb') as f:
             image_data = f.read()
-        image_type = imghdr.what(None, image_data)
+        image_type = guess_file_type(filename=url,
+                                     content=image_data)
         if not image_type:
             mime_type, _ = mimetypes.guess_type(url, strict=False)
             if not mime_type:

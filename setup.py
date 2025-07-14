@@ -55,6 +55,7 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Operating System :: OS Independent',
     ],
     description='A library and command-line tool for generating Github-style ' +
@@ -71,6 +72,9 @@ setup(
     install_requires=['Jinja2>=3,<4', 'requests>=2.22.0,<3'],
     extras_require={
         'pil-measurement': ['Pillow>=6,<10'],
+        ":python_version > '3.12'": [
+            "puremagic>=1.30"
+        ],
         'dev': [
             'Flask>=2.0',  # For server tests. 
             'fonttools>=3.26',
