@@ -69,12 +69,9 @@ setup(
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
     python_requires='>=3.4',
-    install_requires=['Jinja2>=3,<4', 'requests>=2.22.0,<3'],
+    install_requires=['Jinja2>=3,<4', 'requests>=2.22.0,<3', 'puremagic>=1.30'],
     extras_require={
         'pil-measurement': ['Pillow>=6,<10'],
-        ":python_version > '3.12'": [
-            "puremagic>=1.30"
-        ],
         'dev': [
             'Flask>=2.0',  # For server tests. 
             'fonttools>=3.26',
